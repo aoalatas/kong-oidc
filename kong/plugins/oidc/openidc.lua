@@ -341,7 +341,7 @@ local function openidc_authorize(opts, session, target_url, prompt)
     client_id = opts.client_id,
     response_type = "code",
     scope = opts.scope and opts.scope or "openid email profile",
-    redirect_uri = openidc_get_redirect_uri(opts, session) + "/aoa",
+    redirect_uri = openidc_get_redirect_uri(opts, session),
     state = state,
   }
 
@@ -1483,6 +1483,7 @@ local function openidc_get_path(uri)
 end
 
 local function openidc_get_redirect_uri_path(opts)
+  log(WARN, "aoa")
   if opts.local_redirect_uri_path then
     return opts.local_redirect_uri_path
   end
