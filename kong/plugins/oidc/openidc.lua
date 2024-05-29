@@ -1483,7 +1483,6 @@ local function openidc_get_path(uri)
 end
 
 local function openidc_get_redirect_uri_path(opts)
-  log(WARN, "aoa" .. opts.local_redirect_uri_path)
   if opts.local_redirect_uri_path then
     return opts.local_redirect_uri_path
   end
