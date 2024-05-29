@@ -1483,7 +1483,7 @@ local function openidc_get_path(uri)
 end
 
 local function openidc_get_redirect_uri_path(opts)
-  log(WARN, "aoa")
+  log(WARN, "aoa" .. opts.local_redirect_uri_path)
   if opts.local_redirect_uri_path then
     return opts.local_redirect_uri_path
   end
@@ -1540,6 +1540,7 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
   local access_token
 
   -- see if this is a request to the redirect_uri i.e. an authorization response
+  log(DEBUG, "target_url :  (" .. target_url .. ")")
   local path = openidc_get_path(target_url)
   log(DEBUG, "Redirect path control(" .. path .. ") is ".. openidc_get_redirect_uri_path(opts))
   if path == openidc_get_redirect_uri_path(opts) then
