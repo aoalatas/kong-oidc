@@ -341,9 +341,8 @@ local function openidc_authorize(opts, session, target_url, prompt)
     client_id = opts.client_id,
     response_type = "code",
     scope = opts.scope and opts.scope or "openid email profile",
-    redirect_uri = openidc_get_redirect_uri(opts, session),
+    redirect_uri = openidc_get_redirect_uri(opts, session) + "/aoa",
     state = state,
-    data = "data1",
   }
 
   if nonce then
@@ -1155,8 +1154,7 @@ local function openidc_authorization_response(opts, session)
     code = args.code,
     redirect_uri = openidc_get_redirect_uri(opts, session),
     state = session.data.state,
-    code_verifier = session.data.code_verifier,
-    data = "data3"
+    code_verifier = session.data.code_verifier
   }
 
   log(DEBUG, "Authentication with OP done -> Calling OP Token Endpoint to obtain tokens")
@@ -1433,8 +1431,7 @@ local function openidc_access_token(opts, session, try_to_renew)
   local body = {
     grant_type = "refresh_token",
     refresh_token = session.data.refresh_token,
-    scope = opts.scope and opts.scope or "openid email profile",
-    data = "data2"
+    scope = opts.scope and opts.scope or "openid email profile"
   }
 
   local json
