@@ -12,9 +12,12 @@ function OidcHandler:access(config)
 
   local service = kong.router.get_service()
 
+  kong.log.info("aoalatas: ")
+  
     if service then
         kong.log.info("Service ID: " .. service.id)
         kong.log.info("Service Name: " .. service.name)
+        
         -- Diğer service özelliklerine erişim sağlanabilir
     else
         kong.log.info("Request did not match any service.")
