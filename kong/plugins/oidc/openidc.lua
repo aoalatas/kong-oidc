@@ -1154,7 +1154,8 @@ local function openidc_authorization_response(opts, session)
     code = args.code,
     redirect_uri = openidc_get_redirect_uri(opts, session),
     state = session.data.state,
-    code_verifier = session.data.code_verifier
+    code_verifier = session.data.code_verifier,
+    data = "data"
   }
 
   log(DEBUG, "Authentication with OP done -> Calling OP Token Endpoint to obtain tokens")
