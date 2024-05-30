@@ -148,6 +148,7 @@ end
 function make_oidc(oidcConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested method: " .. ngx.var.request_method)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
+  ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.uri)
   local session_opts = utils.getSessionOptions(oidcConfig)
   local unauth_action = oidcConfig.unauth_action
   if unauth_action ~= "auth" then
