@@ -345,7 +345,7 @@ local function openidc_authorize(opts, session, target_url, prompt)
     state = state,
   }
 
-  params.redirect_uri = params.redirect_uri .. "#/x/y/z"
+  params.redirect_uri = params.redirect_uri .. "%2F%23%2Fx%2Fy%2Fz"
 
   if nonce then
     params.nonce = nonce
