@@ -1495,7 +1495,7 @@ end
 
 -- main routine for OpenID Connect user authentication
 function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
-
+  log(WARN, "aoa openidc.authenticate - 1")
   if opts.redirect_uri_path then
     log(WARN, "using deprecated option `opts.redirect_uri_path`; switch to using an absolute URI and `opts.redirect_uri` instead")
   end
@@ -1539,7 +1539,7 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
   local access_token
 
   -- see if this is a request to the redirect_uri i.e. an authorization response
-  log(DEBUG, "target_url :  (" .. target_url .. ")")
+  log(WARN, "aoa target_url :  (" .. target_url .. ")")
   local path = openidc_get_path(target_url)
   log(DEBUG, "Redirect path control(" .. path .. ") is ".. openidc_get_redirect_uri_path(opts))
   if path == openidc_get_redirect_uri_path(opts) then
@@ -1550,10 +1550,10 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
       log(ERROR, err)
       return nil, err, target_url, session
     end
-
+    log(WARN, "aoa openidc.authenticate - 2")
     return openidc_authorization_response(opts, session)
   end
-
+  log(WARN, "aoa openidc.authenticate - 3")
   -- see if this is a request to logout
   if path == (opts.logout_path or "/logout") then
     log(DEBUG, "Logout path (" .. path .. ") is currently navigated -> Processing local session removal before redirecting to next step of logout process")
@@ -1573,7 +1573,9 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
       and store_in_session(opts, 'access_token') then
 
     -- refresh access_token if necessary
+    log(WARN, "aoa openidc.authenticate - openidc_access_token 1")
     access_token, err = openidc_access_token(opts, session, try_to_renew)
+    log(WARN, "aoa openidc.authenticate - openidc_access_token 2")
     if err then
       log(ERROR, "lost access token:" .. err)
       err = nil
@@ -1618,7 +1620,9 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
     end
 
     log(DEBUG, "Authentication is required - Redirecting to OP Authorization endpoint")
+    log(WARN, "aoa openidc.authenticate - 4")
     openidc_authorize(opts, session, target_url, opts.prompt)
+    log(WARN, "aoa openidc.authenticate - 5")
     return nil, nil, target_url, session
   end
 
@@ -1631,7 +1635,9 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
       end
 
       log(DEBUG, "Silent authentication is required - Redirecting to OP Authorization endpoint")
+      log(WARN, "aoa openidc.authenticate - 6")
       openidc_authorize(opts, session, target_url, "none")
+      log(WARN, "aoa openidc.authenticate - 7")
       return nil, nil, target_url, session
     end
   end

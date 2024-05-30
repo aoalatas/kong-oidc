@@ -158,8 +158,9 @@ function make_oidc(oidcConfig)
   end
 
   kong.log.info("openidc.authenticate")
+  kong.log.info("aoa - 1")
   local res, err = openidc.authenticate(oidcConfig, ngx.var.request_uri, unauth_action,session_opts)
-
+  kong.log.info("aoa - 1000")
   if err then
     if err == 'unauthorized request' then
       return kong.response.error(ngx.HTTP_UNAUTHORIZED)
