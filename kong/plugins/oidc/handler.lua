@@ -149,7 +149,6 @@ function make_oidc(oidcConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested method: " .. ngx.var.request_method)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested uri: " .. ngx.var.uri)
-  ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested query_string: " .. ngx.var.query_string)
   
   local session_opts = utils.getSessionOptions(oidcConfig)
   local unauth_action = oidcConfig.unauth_action
