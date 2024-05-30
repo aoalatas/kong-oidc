@@ -393,9 +393,12 @@ local function openidc_authorize(opts, session, target_url, prompt)
     return nil, err
   end
 
+  log(WARN, "aoa openid combineuri get")
   -- redirect to the /authorization endpoint
   ngx.header["Cache-Control"] = "no-cache, no-store, max-age=0"
-  return ngx.redirect(openidc_combine_uri(opts.discovery.authorization_endpoint, params))
+  local combine_uri = openidc_combine_uri(opts.discovery.authorization_endpoint, params)
+  log(WARN, "aoa openid combineuri" .. combine_uri)
+  return ngx.redirect(combine_uri)
 end
 
 -- parse the JSON result from a call to the OP
@@ -1569,9 +1572,7 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
 
   local token_expired = false
   local try_to_renew = opts.renew_access_token_on_expiry == nil or opts.renew_access_token_on_expiry
-  if session.data.present and session.data.authenticated
-      and store_in_session(opts, 'access_token') then
-
+  if session.data.present and session.data.authenticated and store_in_session(opts, 'access_token') then
     -- refresh access_token if necessary
     log(WARN, "aoa openidc.authenticate - openidc_access_token 1")
     access_token, err = openidc_access_token(opts, session, try_to_renew)
