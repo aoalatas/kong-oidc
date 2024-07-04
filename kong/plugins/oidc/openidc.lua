@@ -348,8 +348,8 @@ local function openidc_authorize(opts, session, target_url, prompt)
   log(WARN, "redirect_uri: " .. params.redirect_uri)
 
   local args = ngx.req.get_uri_args()
-  log(WARN, "ngx redirect uri: " .. args.redirect_uri)
   if args.redirect_uri then
+    log(WARN, "ngx redirect uri: " .. args.redirect_uri)
     local new_redirect_uri = "https://your-new-redirect-uri.com/callback"
     args.redirect_uri = new_redirect_uri
 
