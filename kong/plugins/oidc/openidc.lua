@@ -336,6 +336,11 @@ local function openidc_authorize(opts, session, target_url, prompt)
     and resty_string.to_hex(resty_random.bytes(16))
   local code_verifier = opts.use_pkce and openidc_base64_url_encode(resty_random.bytes(32))
 
+  local args = ngx.req.get_uri_args()
+  for key, val in pairs(args) do
+    ngx.log(ngx.ERR, "aoa URI param: ", key, " = ", val)
+  end
+
   -- assemble the parameters to the authentication request
   local params = {
     client_id = opts.client_id,
