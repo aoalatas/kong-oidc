@@ -372,7 +372,7 @@ local function openidc_authorize(opts, session, target_url, prompt)
   
   log(WARN, "ngx redirect encoded uri: " .. encodedUrlPart)
 
-  params.redirect_uri = params.redirect_uri .. "?rp=/#/profile"
+  params.redirect_uri = params.redirect_uri .. "?rp=/xxx/profile"
 
   if nonce then
     params.nonce = nonce
