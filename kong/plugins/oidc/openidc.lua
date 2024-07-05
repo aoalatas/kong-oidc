@@ -1517,7 +1517,7 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
     log(WARN, "using deprecated option `opts.redirect_uri_path`; switch to using an absolute URI and `opts.redirect_uri` instead")
   end
 
-  log(WARN, "get url part " .. err)
+  log(WARN, "get url part ")
   local args = ngx.req.get_uri_args()
   for key, val in pairs(args) do
     --ngx.log(ngx.ERR, "aoa URI param: ", key, " = ", val)
