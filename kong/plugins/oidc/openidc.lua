@@ -297,6 +297,15 @@ local function openidc_base64_url_decode(input)
   return unb64(input)
 end
 
+local function openidc_url_encode(str)
+  if str then
+      str = str:gsub("\n", "\r\n")
+      str = str:gsub("([^%w ])", function(c) return string.format("%%%02X", string.byte(c)) end)
+      str = str:gsub(" ", "+")
+  end
+  return str
+end
+
 -- perform base64url encoding
 local function openidc_base64_url_encode(input)
   local output = b64(input, true)
@@ -346,18 +355,24 @@ local function openidc_authorize(opts, session, target_url, prompt)
   }
 
   log(WARN, "redirect_uri: " .. params.redirect_uri)
-
+  log(WARN, "get url part ")
   local args = ngx.req.get_uri_args()
-  if args.redirect_uri then
-    log(WARN, "ngx redirect uri: " .. args.redirect_uri)
-    local new_redirect_uri = "https://your-new-redirect-uri.com/callback"
-    args.redirect_uri = new_redirect_uri
+  for key, val in pairs(args) do
+    --ngx.log(ngx.ERR, "aoa URI param: ", key, " = ", val)
+    log(WARN, "aoa URI param: " .. key .. val)
+  end
+  
+  local encodedUrlPart
+  if args.urlpart then
+    log(WARN, "ngx redirect uri: " .. args.urlpart)
 
-    -- Yeni URI argümanlarını ayarla
-    ngx.req.set_uri_args(args)
+    encodedUrlPart = openidc_url_encode(args.urlpart)
   end
 
-  -- params.redirect_uri = params.redirect_uri .. "%2F%23%2Fx%2Fy%2Fz"
+  
+  log(WARN, "ngx redirect encoded uri: " .. encodedUrlPart)
+
+  --params.redirect_uri = params.redirect_uri .. "%2F%23%2Fx%2Fy%2Fz"
 
   if nonce then
     params.nonce = nonce
@@ -1517,13 +1532,6 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
     log(WARN, "using deprecated option `opts.redirect_uri_path`; switch to using an absolute URI and `opts.redirect_uri` instead")
   end
 
-  log(WARN, "get url part ")
-  local args = ngx.req.get_uri_args()
-  for key, val in pairs(args) do
-    --ngx.log(ngx.ERR, "aoa URI param: ", key, " = ", val)
-    log(WARN, "aoa URI param: " .. key .. val)
-  end
-
   local err
 
   local session
@@ -1565,8 +1573,9 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
   -- see if this is a request to the redirect_uri i.e. an authorization response
   log(WARN, "aoa target_url :  (" .. target_url .. ")")
   local path = openidc_get_path(target_url)
-  log(DEBUG, "Redirect path control(" .. path .. ") is ".. openidc_get_redirect_uri_path(opts))
-  if path == openidc_get_redirect_uri_path(opts) then
+  local redirect_uri_path = openidc_get_redirect_uri_path(opts)
+  log(DEBUG, "Redirect path control(" .. path .. ") is ".. redirect_uri_path)
+  if path == redirect_uri_path then
     log(DEBUG, "Redirect URI path (" .. path .. ") is currently navigated -> Processing authorization response coming from OP")
 
     if not session.data.present then
