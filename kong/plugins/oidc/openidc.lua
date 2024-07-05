@@ -336,11 +336,6 @@ local function openidc_authorize(opts, session, target_url, prompt)
     and resty_string.to_hex(resty_random.bytes(16))
   local code_verifier = opts.use_pkce and openidc_base64_url_encode(resty_random.bytes(32))
 
-  local args = ngx.req.get_uri_args()
-  for key, val in pairs(args) do
-    ngx.log(ngx.ERR, "aoa URI param: ", key, " = ", val)
-  end
-
   -- assemble the parameters to the authentication request
   local params = {
     client_id = opts.client_id,
@@ -1520,6 +1515,13 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
   log(WARN, "aoa openidc.authenticate - 1")
   if opts.redirect_uri_path then
     log(WARN, "using deprecated option `opts.redirect_uri_path`; switch to using an absolute URI and `opts.redirect_uri` instead")
+  end
+
+  log(WARN, "get url part " .. err)
+  local args = ngx.req.get_uri_args()
+  for key, val in pairs(args) do
+    --ngx.log(ngx.ERR, "aoa URI param: ", key, " = ", val)
+    log(WARN, "aoa URI param: " .. key .. val)
   end
 
   local err
