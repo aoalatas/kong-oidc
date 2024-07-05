@@ -363,10 +363,10 @@ local function openidc_authorize(opts, session, target_url, prompt)
   end
   
   local encodedUrlPart
-  if args.urlpart then
-    log(WARN, "ngx redirect uri: " .. args.urlpart)
+  if args.rd then
+    log(WARN, "ngx redirect uri: " .. args.rd)
 
-    encodedUrlPart =  args.urlpart --openidc_url_encode(args.urlpart)
+    encodedUrlPart =  args.rd --openidc_url_encode(args.urlpart)
   end
 
   
