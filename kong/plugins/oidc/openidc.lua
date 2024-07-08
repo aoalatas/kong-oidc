@@ -362,7 +362,7 @@ local function openidc_authorize(opts, session, target_url, prompt)
     log(WARN, "aoa URI param: " .. key .. val)
   end
   
-  local encodedUrlPart
+  local encodedUrlPart = ""
   if args.rd then
     log(WARN, "ngx redirect uri: " .. args.rd)
     local rpParam = "?rd=" .. args.rd
