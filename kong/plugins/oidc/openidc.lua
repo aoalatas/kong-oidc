@@ -368,12 +368,12 @@ local function openidc_authorize(opts, session, target_url, prompt)
     local rpParam = "?rd=" .. args.rd
 
     encodedUrlPart =  openidc_url_encode(rpParam)
+
+    log(WARN, "ngx redirect uri: " .. params.redirect_uri)  
+    log(WARN, "ngx redirect encoded uri part: " .. encodedUrlPart)
+  
+    params.redirect_uri = params.redirect_uri .. encodedUrlPart
   end
-
-  log(WARN, "ngx redirect uri: " .. params.redirect_uri)  
-  log(WARN, "ngx redirect encoded uri part: " .. encodedUrlPart)
-
-  params.redirect_uri = params.redirect_uri .. encodedUrlPart
 
   log(WARN, "after param redirectUri " .. params.redirect_uri)  
 
