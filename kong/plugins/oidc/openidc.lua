@@ -1703,6 +1703,8 @@ function openidc.access_token(opts, session_opts)
 
   local session = r_session.start(session_opts){}
   local token, err = openidc_access_token(opts, session, true)
+  session.cookie.samesite = "Strict"  -- SameSite değerini değiştirme
+  session.cookie.secure = false       -- Secure bayrağını değiştirme
   session:close()
   return token, err
 end
