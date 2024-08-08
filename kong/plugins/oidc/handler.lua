@@ -145,6 +145,20 @@ if response == nil then
 end
 end
 
+function setCookie()
+  kong.log.info("aoa - setCookie")
+  local cookies = ngx.header["Set-Cookie"]
+  if cookies then
+    if type(cookies) == "table" then
+      for i = 1, #cookies do
+        cookies[i] = cookies[i] .. "; SameSite=Strict; Secure"
+      end
+    else
+      ngx.header["Set-Cookie"] = cookies .. "; SameSite=Strict; Secure"
+    end
+  end
+end
+
 function make_oidc(oidcConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested method: " .. ngx.var.request_method)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
@@ -160,6 +174,7 @@ function make_oidc(oidcConfig)
   kong.log.info("openidc.authenticate")
   kong.log.info("aoa - 1")
   local res, err = openidc.authenticate(oidcConfig, ngx.var.request_uri, unauth_action, session_opts)
+  setCookie()
   kong.log.info("aoa - 1000")
   if err then
     if err == 'unauthorized request' then
