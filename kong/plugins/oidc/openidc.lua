@@ -543,13 +543,15 @@ function openidc.call_token_endpoint(opts, endpoint, body, auth, endpoint_name, 
   end
 
   local pass_cookies = opts.pass_cookies
+  log(DEBUG, "aoa pass_cookies")
   if pass_cookies then
     if ngx.req.get_headers()["Cookie"] then
       local t = {}
       for cookie_name in string.gmatch(pass_cookies, "%S+") do
+        log(DEBUG, "pass_cookies ccookieName : " .. cookie_name .. " cookieValue : " .. cookie_value)
         local cookie_value = ngx.var["cookie_" .. cookie_name]
         if cookie_value then
-          table.insert(t, cookie_name .. "=" .. cookie_value)
+          table.insert(t, cookie_name .. "=" .. cookie_value .. "Secure; SameSite=Strict")
         end
       end
       headers.Cookie = table.concat(t, "; ")
