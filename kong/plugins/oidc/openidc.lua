@@ -543,8 +543,9 @@ function openidc.call_token_endpoint(opts, endpoint, body, auth, endpoint_name, 
   end
 
   local pass_cookies = opts.pass_cookies
-  log(DEBUG, "aoa pass_cookies")
+  log(DEBUG, "aoa pass_cookies : " .. pass_cookies)
   if pass_cookies then
+    log(DEBUG, "aoa ngx cookies : " .. ngx.req.get_headers()["Cookie"])
     if ngx.req.get_headers()["Cookie"] then
       local t = {}
       for cookie_name in string.gmatch(pass_cookies, "%S+") do
