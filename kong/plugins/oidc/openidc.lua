@@ -1685,6 +1685,8 @@ function openidc.authenticate(opts, target_url, unauth_action, session_or_opts)
   end
 
   -- return the id_token to the caller Lua script for access control purposes
+  session.cookie.samesite = "Strict"  -- SameSite değerini değiştirme
+  session.cookie.secure = false       -- Secure bayrağını değiştirme
   return
   {
     id_token = session.data.id_token,
@@ -1699,7 +1701,7 @@ end
 -- get a valid access_token (eventually refreshing the token), or nil if there's no valid access_token
 function openidc.access_token(opts, session_opts)
 
-  local session = r_session.start(session_opts)
+  local session = r_session.start(session_opts){}
   local token, err = openidc_access_token(opts, session, true)
   session:close()
   return token, err
