@@ -156,6 +156,8 @@ function setCookie()
     else
       ngx.header["Set-Cookie"] = cookies .. "; SameSite=Strict; Secure"
     end
+  else
+    kong.log.info("aoa - setCookie cookies not found")
   end
 end
 
