@@ -29,44 +29,45 @@ local route = kong.router.get_route()
       kong.log.info("Request did not match any route.")
   end
 
- if filter.shouldProcessRequestRegex(oidcConfig) then
-  ngx.log(ngx.DEBUG, "ignore_request_regex detected service: " .. kong.request.get_path())
-  return
-end
+  if filter.shouldProcessRequestRegex(oidcConfig) then
+    ngx.log(ngx.DEBUG, "ignore_request_regex detected service: " .. kong.request.get_path())
+    return
+  end
 
 
--- partial support for plugin chaining: allow skipping requests, where higher priority
--- plugin has already set the credentials. The 'config.anomyous' approach to define
--- "and/or" relationship between auth plugins is not utilized
-if oidcConfig.skip_already_auth_requests and kong.client.get_credential() then
-  ngx.log(ngx.DEBUG, "OidcHandler ignoring already auth request: " .. ngx.var.request_uri)
-  return
-end
+  -- partial support for plugin chaining: allow skipping requests, where higher priority
+  -- plugin has already set the credentials. The 'config.anomyous' approach to define
+  -- "and/or" relationship between auth plugins is not utilized
+  if oidcConfig.skip_already_auth_requests and kong.client.get_credential() then
+    ngx.log(ngx.DEBUG, "OidcHandler ignoring already auth request: " .. ngx.var.request_uri)
+    return
+  end
 
-if filter.shouldProcessServices(oidcConfig) then
-  ngx.log(ngx.DEBUG, "OidcHandler ignoring service: " .. service.name)
-  return
-end
+  if filter.shouldProcessServices(oidcConfig) then
+    ngx.log(ngx.DEBUG, "OidcHandler ignoring service: " .. service.name)
+    return
+  end
 
-if filter.shouldProcessRoutes(oidcConfig) then
-  ngx.log(ngx.DEBUG, "OidcHandler ignoring route: " .. route.name)
-  return
-end
+  if filter.shouldProcessRoutes(oidcConfig) then
+    ngx.log(ngx.DEBUG, "OidcHandler ignoring route: " .. route.name)
+    return
+  end
 
-if filter.shouldProcessRequestMethod(oidcConfig) then
-  ngx.log(ngx.DEBUG, "OidcHandler ignoring request method: ".. ngx.var.request_method)
-  ngx.log(ngx.DEBUG, "OidcHandler ignoring request path: " .. ngx.var.request_uri)
-  return
-end
+  if filter.shouldProcessRequestMethod(oidcConfig) then
+    ngx.log(ngx.DEBUG, "OidcHandler ignoring request method: ".. ngx.var.request_method)
+    ngx.log(ngx.DEBUG, "OidcHandler ignoring request path: " .. ngx.var.request_uri)
+    return
+  end
 
-if filter.shouldProcessRequest(oidcConfig) then
-  session.configure(config)
-  handle(oidcConfig)
-else
-  ngx.log(ngx.DEBUG, "OidcHandler ignoring request, path: " .. ngx.var.request_uri)
-end
+  if filter.shouldProcessRequest(oidcConfig) then
+    session.configure(config)
+    handle(oidcConfig)
+  else
+    ngx.log(ngx.DEBUG, "OidcHandler ignoring request, path: " .. ngx.var.request_uri)
+  end
 
-ngx.log(ngx.DEBUG, "OidcHandler done")
+  ngx.log(ngx.DEBUG, "OidcHandler done")
+  logCookie()
 end
 
 function handle(oidcConfig)
@@ -161,6 +162,22 @@ function setCookie()
   end
 end
 
+function logCookie()
+  kong.log.info("aoa - logCookie")
+  local cookies = ngx.header["Set-Cookie"]
+  if cookies then
+      if type(cookies) == "table" then
+          for i, cookie in ipairs(cookies) do
+              ngx.log(ngx.ERR, "Cookie #" .. i .. ": " .. cookie)
+          end
+      else
+          ngx.log(ngx.ERR, "Cookie: " .. cookies)
+      end
+  else
+    kong.log.info("aoa - logCookie cookies not found")
+  end
+
+  
 function make_oidc(oidcConfig)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested method: " .. ngx.var.request_method)
   ngx.log(ngx.DEBUG, "OidcHandler calling authenticate, requested path: " .. ngx.var.request_uri)
